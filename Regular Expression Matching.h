@@ -1,7 +1,8 @@
 /*
 Problem: Regular Expression Matching
 Source: https://oj.leetcode.com/problems/regular-expression-matching/
-Difficulty: ***
+Difficulty: ***^
+Date: 06/30/2014
 Description: 
 Implement regular expression matching with support for '.' and '*'.
 
@@ -68,5 +69,23 @@ public:
         }
         
         return *s == '\0' && *p == '\0';
+    }
+
+    bool isMatch_2(const char *s, const char *p) {
+        if (!s || !p) return false;
+        if (*s == '\0' && *p == '\0') return true;
+        if (*p == '\0') return false;
+        
+        if (*(p+1) == '*') {
+            while (*s != '\0' && (*s == *p || *p == '.')) {
+                if (isMatch_2(s, p+2))
+                    return true;
+                ++s;
+            }
+            
+            return isMatch_2(s, p+2);
+        }
+        
+        return (*s != '\0') && (*s == *p || *p == '.') && isMatch_2(s+1, p+1);
     }
 };
