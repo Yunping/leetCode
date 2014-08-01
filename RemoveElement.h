@@ -10,7 +10,7 @@ Author: Yunping, qufang83@gmail.com
 Date: Aug 1, 2014
 Difficulty: *^
 Review: ***
-Solution: Swap elem to the end of the array. Not a difficult problem. But not that easy to write correctly one time.
+Solution: Updated. Use two indexes.
 
 */
 
@@ -18,24 +18,12 @@ class Solution {
 public:
     int removeElement(int A[], int n, int elem) {
         if (!A || n <= 0) return 0;
-        
-        int j = n-1;
         int i = 0;
-        while (i <= j) {
-            while (j >= i && A[j] == elem)
-                --j;
-            if (i > j)
-                break;
-                    
-            if (A[i] == elem) {
-                A[i] = A[j];
-                A[j] = elem;
-                --j;
-            }
-            
-            ++i;
+        for (int j = 0; j < n; ++j) {
+            if (A[j] != elem)
+                A[i++] = A[j];
         }
         
-        return j+1;
+        return i;
     }
 };
