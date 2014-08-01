@@ -16,27 +16,19 @@ Author: Yunping, qufang83@gmail.com
 Date: Aug 1, 2014
 Difficulty: *
 Review: ***
-Solution: 
+Solution: No need to use too many vars.
 
 */
 class Solution {
 public:
     int removeDuplicates(int A[], int n) {
-        if (!A || n <= 0) return 0;
-        
-        int cur = A[0];
-        int src = 1;
-        int dest = 1;
-        
-        while (src < n) {
-            while (A[src] == cur && src < n)
-                ++src;
-            if (src == n)
-                break;
-            cur = A[src++];
-            A[dest++] = cur;
+        int j = 0;
+        for (int i = 0; i < n; ++i) {
+            if (i > 0 && A[i] == A[i-1])
+                continue;
+            A[j++] = A[i];
         }
         
-        return dest;
+        return j;
     }
 };
