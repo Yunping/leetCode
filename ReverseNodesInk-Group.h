@@ -23,7 +23,6 @@ Difficulty: **
 Review: ***
 Solution: A good exercise for lists.
 
-
 */
 /**
  * Definition for singly-linked list.
