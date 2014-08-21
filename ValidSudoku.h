@@ -11,11 +11,7 @@ Author: Yunping, qufang83@gmail.com
 Date: 08/20/2014
 Difficulty: *^
 Review: **^
-<<<<<<< HEAD
 Solution: Only one pass traverse.
-=======
-Solution: o(n^2), one pass traverse.
->>>>>>> FETCH_HEAD
 1. Use a row map, a col map, and 3 cell maps, to record the number that has been used.
 2. Traverse by rows/cols, check each elem in every row/col/cell. Reset the map for 
    rows/cols every row/col. Reset the cell maps every 3 rows.
@@ -36,7 +32,6 @@ public:
             for (int j = 0; j < N; ++j) {
                 char row_elem = board[i][j];
                 if (row_elem != '.') {
-<<<<<<< HEAD
                     int row_idx = row_elem - '1';
                     // check rows
                     if (row_used & (1<<row_idx))
@@ -47,32 +42,15 @@ public:
                     if (cell_used & (1<<(N*(j/3) + row_idx)))
                         return false;
                     cell_used |= (1<<(N*(j/3) + row_idx));
-=======
-                    // check rows
-                    if (row_used & (1<<(row_elem - '1')))
-                        return false;
-                    row_used |= (1<<(row_elem - '1'));
-                    
-                    // check cells
-                    if (cell_used & (1<<(N*(j/3) + row_elem - '1')))
-                        return false;
-                    cell_used |= (1<<(N*(j/3) + row_elem - '1'));
->>>>>>> FETCH_HEAD
                 }
                 
                 // check cols
                 char col_elem = board[j][i];
                 if (col_elem != '.') {
-<<<<<<< HEAD
                     int col_idx = col_elem - '1';
                     if (col_used & (1<<col_idx))
                         return false;
                     col_used |= (1<<col_idx);
-=======
-                    if (col_used & (1<<(col_elem - '1')))
-                        return false;
-                    col_used |= (1<<(col_elem - '1'));
->>>>>>> FETCH_HEAD
                 }
             }
         }
