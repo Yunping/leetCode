@@ -21,7 +21,7 @@ Difficulty: ***^
 Review: ****
 Solution: (my solution)
 1. Sort and remove dups by using a set.
-2. Try every candidates recursively.
+2. DFS: Try every candidates recursively.
 
 This problem is similiar with "coins sum".
 */
@@ -34,30 +34,35 @@ public:
         
         vector<int> temp;
         vector<vector<int> > ret;
-        doCombinationSum(sorted, target, 0, temp, ret);
+        combinationSum_dfs(sorted, target, 0, temp, ret);
         
         return ret;
     }
 
 private:  
-    void doCombinationSum(vector<int> & candidates, int target, int previousIndex, 
+    bool combinationSum_dfs(vector<int> & candidates, int target, int previousIndex, 
                           vector<int> &result, vector<vector<int> > &ret) {
         if (target == 0) {
             if (!result.empty())
                 ret.push_back(result);
-            return;
+            return true;
         }
         
         // Start from previousIndex of candidates to avoid duplicate results.
         for (int i = previousIndex; i < candidates.size(); ++i) {
             if (candidates[i] > target) {
-                // discard this result
+                // the following candidates are all greater then target, 
+                // so terminate the loop.
                 break;
             } else {
                 result.push_back(candidates[i]);
-                doCombinationSum(candidates, target - candidates[i], i, result, ret);
+                bool find = combinationSum_dfs(candidates, target - candidates[i], i, result, ret);
                 result.pop_back();
+                if (find)
+                    break;
             }
         }
+        
+        return false;
     }
 };
