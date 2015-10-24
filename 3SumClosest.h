@@ -5,57 +5,42 @@ Given an array S of n integers, find three integers in S such that the sum is cl
     For example, given array S = {-1 2 1 -4}, and target = 1.
 
     The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
-    
+
+===========================================================================================
+
+Author: Yunping, qufang83@gmail.com
 Date: 07/27/2014
-Difficulty: **^
-Review: **^
-Note: Similiar with "3Sum" problem. Keep an eye if:
-if 2*num[l]>cur2Sum+absMin, or 2*num[r]+absMin < cur2Sum
+Refactor: 10/24/2015
+Difficulty: **
+Review: *^
+Solution: Similiar with 3Sum.
 */
-    
 class Solution {
 public:
-    int absDiff(int a, int b) {
-        if (a > b)
-            return (a - b);
-        else
-            return (b - a);
-    }
-    
-    int threeSumClosest(vector<int> &num, int target) {
-        sort(num.begin(), num.end());
-        int len = num.size();
+    int threeSumClosest(vector<int>& nums, int target) {
+        int len = nums.size();
         if (len < 3) return 0;
+        sort(nums.begin(), nums.end());
         
-        int absMin = INT_MAX;
-        int closest = num[0] + num[1] + num[2];
-        
+        int min_delta = INT_MAX;
         for (int i = 0; i < len - 2; ++i) {
-            int cur2Sum = target - num[i];
             int l = i + 1;
             int r = len - 1;
             while (l < r) {
-                int sum2 = num[l] + num[r];
-                if (sum2 == cur2Sum)
+                int two_sum = nums[l] + nums[r];
+                int delta = two_sum - (target - nums[i]);
+                if (delta == 0) {
                     return target;
-                    
-                // The possible range of 2sum is 2*num[l] ~ 2*num[r], if 2*num[l]>cur2Sum+absMin,
-                // or 2*num[r]+absMin < cur2Sum, we can terminate the loop here.
-                if (2 * num[l] - cur2Sum > absMin || cur2Sum - 2 * num[r] > absMin)
-                    break;
-                    
-                if (absDiff(target, sum2 + num[i]) < absMin) {
-                    absMin = absDiff(target, sum2 + num[i]);
-                    closest = sum2 + num[i];
-                }
-                
-                if (sum2 < cur2Sum)
-                    ++l;
-                else if (sum2 > cur2Sum)
+                } else if (delta > 0)
                     --r;
+                else
+                    ++l;
+                if (abs(delta) < abs(min_delta)) {
+                    min_delta = delta;
+                }
             }
         }
         
-        return closest;
+        return (target + min_delta);
     }
 };
