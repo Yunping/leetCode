@@ -4,36 +4,34 @@ Given a string containing just the characters '(', ')', '{', '}', '[' and ']', d
 
 The brackets must close in the correct order, "()" and "()[]{}" are all valid but "(]" and "([)]" are not.
 
+==================================================================================================
+
+Author: Yunping, qufang83@gmail.com
 Date: 07/30/2014
+Refactor: 10/24/2015
 Difficulty: *^
 Review: **
-Note: 
+Solution: Use a stack
 */
-
 class Solution {
+private:
+    bool isPair(char l, char r) {
+        return (l == '(' && r == ')') || (l == '[' && r == ']') || (l == '{' && r == '}');
+    }
 public:
     bool isValid(string s) {
-        unordered_map<char, char> pairOf;
-        pairOf['('] = ')';
-        pairOf['['] = ']';
-        pairOf['{'] = '}';
-        
-        stack<char> temp;
-        
-        size_t len = s.length();
-        for (int i = 0; i < len; ++i) {
-            if (s[i] == '(' || s[i] == '[' || s[i] == '{')
-                temp.push(s[i]);
-            else {
-                if (temp.empty())
+        stack<char> st;
+        for (char c : s) {
+            if (c == '(' || c == '[' || c == '{') {
+                st.push(c);
+            } else {
+                if (!st.empty() && isPair(st.top(), c))
+                    st.pop();
+                else
                     return false;
-                char t = temp.top();
-                if (pairOf[t] != s[i])
-                    return false;
-                temp.pop();
             }
         }
         
-        return temp.empty();
+        return st.empty();
     }
 };
