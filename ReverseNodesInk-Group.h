@@ -1,5 +1,6 @@
 /*
 Problem: Reverse Nodes in k-Group
+
 Given a linked list, reverse the nodes of a linked list k at a time and return its modified list.
 
 If the number of nodes is not a multiple of k then left-out nodes in the end should remain as it is.
@@ -15,14 +16,13 @@ For k = 2, you should return: 2->1->4->3->5
 
 For k = 3, you should return: 3->2->1->4->5
 
-Source: https://oj.leetcode.com/problems/reverse-nodes-in-k-group/
+====================================================================================
 
-Author: Yunping
-Date: 08/01/2014
-Difficulty: **
-Review: ***
-Solution: A good exercise for lists.
-
+Author: Yunping, qufang83@gmail.com
+Date: 11/21/2015
+Difficulty: ***
+Review: **^
+Solution:
 */
 /**
  * Definition for singly-linked list.
@@ -33,57 +33,60 @@ Solution: A good exercise for lists.
  * };
  */
 class Solution {
-public:
-    ListNode *reverseKGroup(ListNode *head, int k) {
-        if (!head || k <= 1) return head;
-        
-        ListNode *p1 = head;
-        ListNode *prev = 0;
-        ListNode *newHead = head;
-        while (p1) {
-            ListNode *p2 = nodeBehindK(p1, k);
-            ListNode *next = 0;
-            if (!p2) {
-                if (prev)
-                    prev->next = p1;
-                break;
-            } else {
-                if (prev)
-                    prev->next = p2;
-                next = p2->next;
-                prev = p1;
-                reverse(p1, p2);
-                p1 = next;
-                if (newHead == head)
-                    newHead = p2;
-            }
-        }
-        
-        return newHead;
-    }
-
 private:
-    // get the node behind k steps to p1
-    ListNode *nodeBehindK(ListNode *p1, int k) {
-        ListNode *p2 = p1;
-        while (k > 1 && p2) {
-            p2 = p2->next;
-            --k;
+    // revert k nodes from head. return new head and next head.
+    pair<ListNode*, ListNode*> reverseKNodes(ListNode *head, int k) {
+        pair<ListNode*, ListNode*> ret;
+        
+        // check if there is enough nodes left.
+        int totalCount = 0;
+        ListNode *p = head;
+        while (p) {
+            if (++totalCount >= k)
+                break;
+            p = p->next;
+        }
+        if (totalCount < k) {
+            ret.first = head;
+            ret.second = 0;
+            return ret;
         }
         
-        return p2;
+        // reverse k nodes
+        ListNode *prev = 0, *cur = head;
+        int count = 0;
+        while (cur) {
+            ListNode *next = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = next;
+            if (++count == k)
+                break;
+        }
+        
+        ret.first = prev;
+        ret.second = cur;
+        
+        return ret;
     }
     
-    // reverse list from p1 to p2.
-    void reverse(ListNode *p1, ListNode *p2) {
-        ListNode *prev = 0;
-        while (p1 != p2) {
-            ListNode *next = p1->next;
-            p1->next = prev;
-            prev = p1;
-            p1 = next;
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if (!head || k <= 1) return head;
+        
+        ListNode dummy(0);
+        dummy.next = head;
+        ListNode *curHead = head;
+        ListNode *prevTail = &dummy;
+        while (curHead) {
+            pair<ListNode*, ListNode*> heads = reverseKNodes(curHead, k);
+            ListNode* reversedTail = curHead;
+            ListNode* reversedHead = heads.first;
+            prevTail->next = reversedHead;
+            prevTail = reversedTail;
+            curHead = heads.second;
         }
         
-        p2->next = prev;
+        return dummy.next;
     }
 };

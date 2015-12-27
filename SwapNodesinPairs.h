@@ -7,15 +7,14 @@ Given 1->2->3->4, you should return the list as 2->1->4->3.
 
 Your algorithm should use only constant space. You may not modify the values in the list, only nodes itself can be changed.
 
-Source: https://oj.leetcode.com/problems/swap-nodes-in-pairs/
+==========================================================================================
 
-Author: Yunping
-Date: 07/31/2014
-Difficulty: **^
-Review: ***
-Solution: Not a hard problem. But it is mistakable and need to consider all cases.
+Author: Yunping, qufang83@gmail.com
+Date: 11/08/2015
+Difficulty: *
+Review: *^
+Solution: Two pointers
 */
-
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -26,23 +25,23 @@ Solution: Not a hard problem. But it is mistakable and need to consider all case
  */
 class Solution {
 public:
-    ListNode *swapPairs(ListNode *head) {
-        if (!head || !head->next)
-            return head;
-        
-        ListNode* p1 = head;
-        ListNode* p2 = head->next;
-        head = p2;
-        
-        while (p2) {
-            ListNode *nextP1 = p2->next;
-            p1->next = (nextP1 && nextP1->next) ? nextP1->next : nextP1;
+    ListNode* swapPairs(ListNode* head) {
+        if (!head || !head->next) return head;
+        ListNode dummy(0);
+        dummy.next = head;
+        ListNode *prev = &dummy;
+        ListNode *p1 = head, *p2 = head->next;
+        while (p1 && p2) {
+            ListNode *next = p2->next;
+            prev->next = p2;
             p2->next = p1;
+            p1->next = next;
             
-            p1 = nextP1;
-            p2 = nextP1 ? nextP1->next : 0;
+            prev = p1;
+            p1 = next;
+            p2 = p1 ? p1->next : 0;
         }
         
-        return head;
+        return dummy.next;
     }
 };
