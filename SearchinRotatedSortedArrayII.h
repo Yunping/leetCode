@@ -1,5 +1,6 @@
 /*
 Problem: Search in Rotated Sorted Array II
+
 Follow up for "Search in Rotated Sorted Array":
 What if duplicates are allowed?
 
@@ -7,61 +8,56 @@ Would this affect the run-time complexity? How and why?
 
 Write a function to determine if a given target is in the array.
 
-=================================================================================
+====================================================================================
 
 Author: Yunping, qufang83@gmail.com
-Date: 10/10/2014
+Date: 2015/12/27
 Difficulty: ***
-Review: ***^
-Solution: (My Own)
+Review: ***
+Solution: Only need to consider the case that a[l] == a[m] == a[r].
 */
 class Solution {
 public:
-    bool search(int A[], int n, int target) {
-        return search(A, 0, n-1, target);
+    bool search(vector<int>& nums, int target) {
+        int len = nums.size();
+        if (len < 1) return -1;
+        
+        int l = 0, r = len - 1;
+        while (l <= r) {
+            int m = (l + r) >> 1;
+            if (nums[m] == target)
+                return true;
+            
+            // if a[l] == a[m] == a[r], we don't know a[m] is in the first part or 
+            // the second part, do the linerSearch.
+            if (nums[l] == nums[r] && nums[m] == nums[l])
+                return linearSearch(nums, l, r, target);
+            
+            if (nums[m] >= nums[l]) {
+                // a[m] is in the first rotated half
+                if (target >= nums[l] && target < nums[m])
+                    r = m - 1;
+                else
+                    l = m + 1;
+            } else {
+                // a[m] is in the second rotated half
+                if (target > nums[m] && target <= nums[r])
+                    l = m + 1;
+                else
+                    r = m - 1;
+            }
+        }
+        
+        return false;
     }
     
 private:
-    bool binary_search(int A[], int l, int r, int target) {
-        if (l > r) return false;
-        int m = (l + r) / 2;
-        if (A[m] == target)
-            return true;
-        
-        if (A[m] < target)
-            return binary_search(A, m+1, r, target);
-        else
-            return binary_search(A, l, m-1, target);
-    }
-    
-    bool search(int A[], int l, int r, int target) {
-        if (l > r) return false;
-        
-        int m = l + (r-l)/2;
-        int mid = A[m];
-        if (target ==  mid) return true;
-        
-        if (A[l] == A[r] && A[l] == mid) {
-            // do a linear search.
-            return search(A, l, m-1, target) || search(A, m+1, r, target);
-        } else if (A[l] < A[r]) {
-            // do a binary search
-            return binary_search(A, l, r, target);
-        } else {
-            // A[l] >= A[r], the array must be rotated.
-            if (mid > A[r]) {
-                // mid > right, first half is longer
-                if (target >= A[l] && target < mid) {
-                    return search(A, l, m-1, target);
-                } else
-                    return search(A, m+1, r, target);
-            } else {
-                // mid <= right, second half is longer
-                if (target > mid && target <= A[r])
-                    return search(A, m+1, r, target);
-                else
-                    return search(A, l, m-1, target);
-            }
+    int linearSearch(const vector<int> &nums, int l, int r, int target) {
+        for (int i = l; i <= r; ++i) {
+            if (nums[i] == target)
+                return true;
         }
+        
+        return false;
     }
 };
