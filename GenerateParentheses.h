@@ -1,45 +1,51 @@
 /*
 Problem: Generate Parentheses
+
 Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
 
 For example, given n = 3, a solution set is:
 
 "((()))", "(()())", "(())()", "()(())", "()()()"
 
-Source: https://oj.leetcode.com/problems/generate-parentheses/
+===========================================================================================
 
-Author: Fang Qu
-Date: 07/31/2014
+Author: Yunping, qufang83@gmail.com
+Date: 11/06/2015
 Difficulty: **
 Review: **
-Solution: recursion.
+Solution:
 */
-
 class Solution {
-public:
-    vector<string> generateParenthesis(int n) {
-        string result;
-        vector<string> ret;
-        generateParenthesis(n, n, result, ret);
-        
-        return ret;
-    }
-    
-    void generateParenthesis(int left, int right, string &result, vector<string>& ret) {
+private:
+    void doGenerate(int left, int right, string &result, vector<string> &ret) {
         if (left == 0 && right == 0) {
             ret.push_back(result);
             return;
         }
-        if (left > 0) {
-            result.push_back('(');
-            generateParenthesis(left-1, right, result, ret);
-            result.pop_back();
+        
+        if (left <= right) {
+            if (left > 0) {
+                result.push_back('(');
+                doGenerate(left-1, right, result, ret);
+                result.pop_back();
+            }
+            
+            if (right > 0) {
+                result.push_back(')');
+                doGenerate(left, right-1, result, ret);
+                result.pop_back();
+            }
+        }
+    }
+    
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> ret;
+        if (n > 0) {
+            string result;
+            doGenerate(n, n, result, ret);
         }
         
-        if (left < right) {
-            result.push_back(')');
-            generateParenthesis(left, right-1, result, ret);
-            result.pop_back();
-        }
+        return ret;
     }
 };

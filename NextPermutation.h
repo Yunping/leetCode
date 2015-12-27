@@ -1,5 +1,6 @@
 /*
 Problem: Next Permutation
+
 Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.
 
 If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
@@ -11,42 +12,40 @@ Here are some examples. Inputs are in the left-hand column and its corresponding
 3,2,1 → 1,2,3
 1,1,5 → 1,5,1
 
+==========================================================================================
 
-Author: Yunping, qufang83@gmail.com
+Author: Yunping,
+Date: 12/13/2015
 Difficulty: ***
-Review: ***
-Date: 08/17/2014
-Solution: 
-O(n^2)
-1. Find the first pair of numbers with ascending order, say num[i] and num[j], (i < j), 
-2. then swap num[i] and num[j]. 
-3. Sort the num[i+1] to num[N-1].
-
+Review: ***^
+Solution: See the comments. (from JJ. Hou's Stl Code Internals)
 */
-
 class Solution {
 public:
-    void nextPermutation(vector<int> &num) {
-        int N = num.size();
-        if (N == 0) return;
+    void nextPermutation(vector<int>& nums) {
+        int len = nums.size();
+        if (len < 2) return;
         
-        pair<int, int> fr = make_pair(-1, N);
-        for (int i = N - 1; i > 0; --i) {
-            for (int j = i - 1; j > fr.first; --j) {
-                if (num[j] < num[i]) {
-                    fr.first = j;
-                    fr.second = i;
-                    break;
-                }
+        // step 1: from back to forth, find the first pairs that make nums[i] < nums[i+1]. 
+        int i = len - 2, ii = len - 1;
+        while (i >= 0) {
+            if (nums[i] < nums[ii])
+                break;
+            --i;
+            --ii;
+        }
+        
+        // step 2: from back to forth until nums[i], find the first element which is bigger than nums[i].
+        if (i >= 0) {
+            for (int k = len - 1; k >= ii; --k) {
+                 if (nums[k] > nums[i]) {
+                     swap(nums[i], nums[k]);
+                     break;
+                 }
             }
         }
         
-        if (fr.first != -1) {
-            int t = num[fr.first];
-            num[fr.first] = num[fr.second];
-            num[fr.second] = t;
-        }
-        
-        sort(num.begin() + fr.first + 1, num.end());
+        // step 3: revert nums[ii] to the end.
+        reverse(nums.begin() + ii, nums.end());
     }
 };
